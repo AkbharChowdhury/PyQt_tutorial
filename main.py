@@ -1,4 +1,5 @@
 import sys
+
 from PyQt6.QtWidgets import (QApplication,
                              QMainWindow,
                              QCheckBox,
@@ -9,13 +10,10 @@ from PyQt6.QtWidgets import (QApplication,
                              QLineEdit
                              )
 
-from MyCounter import MyCounter
 from db import Database
-from genres import Genre
 
 
 def get_genres():
-    # return [Genre(row[0], row[1]) for row in db.fetch_all_genres()]
     return db.fetch_all_genres()
 
 
