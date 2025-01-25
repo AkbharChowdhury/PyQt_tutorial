@@ -13,7 +13,7 @@ class Database:
     def add_movie(self, name):
         config = load_config()
         with psycopg2.connect(**config) as conn:
-            with  conn.cursor() as cur:
+            with conn.cursor() as cur:
                 cur.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', (name,))
                 return cur.fetchone()[0]
 
@@ -24,7 +24,10 @@ class Database:
                 for genre_id in genre_id_list:
                     cur.execute("""
                                           INSERT INTO movie_genres (movie_id, genre_id)
-                                          VALUES (%(movie_id)s, %(genre_id)s);
+                                          VALUES (
+                                          %(movie_id)s,
+                                           %(genre_id)s
+                                          );
                                           """, {
                         'movie_id': movie_id,
                         'genre_id': genre_id,
