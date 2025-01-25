@@ -8,7 +8,24 @@ class Database:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor() as cursor:
                 cursor.execute("SELECT * FROM genres ORDER BY genre")
-                # for row in cursor.fetchall():
-                #     print(type(row))
-
                 return [Genre(row[0], row[1]) for row in cursor.fetchall()]
+
+    def add_movie(self, name):
+        config = load_config()
+        with psycopg2.connect(**config) as conn:
+            with  conn.cursor() as cur:
+                cur.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', (name,))
+                return cur.fetchone()[0]
+
+    def add_movie_genres(self, movie_id : int, genre_id_list: set[int]):
+        config = load_config()
+        with psycopg2.connect(**config) as conn:
+            with  conn.cursor() as cur:
+               for genre_id in genre_id_list:
+                   cur.execute("""
+                                          INSERT INTO movie_genres (movie_id, genre_id)
+                                          VALUES (%(movie_id)s, %(genre_id)s);
+                                          """, {
+                       'movie_id': movie_id,
+                       'genre_id': genre_id,
+                   })

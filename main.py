@@ -1,5 +1,4 @@
 import sys
-
 from PyQt6.QtWidgets import (QApplication,
                              QMainWindow,
                              QCheckBox,
@@ -7,18 +6,19 @@ from PyQt6.QtWidgets import (QApplication,
                              QVBoxLayout,
                              QLabel,
                              QPushButton,
-                             QLineEdit
+                             QLineEdit, QMessageBox
                              )
 
 from db import Database
+from form_validation import AddMovieFormValidation
+from messageboxes import MyMessageBox
 
 
 def get_genres():
     return db.fetch_all_genres()
 
 
-
-class MainWindow(QMainWindow):
+class AddMovieForm(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -38,14 +38,16 @@ class MainWindow(QMainWindow):
 
         self.layout.addWidget(btn_add_movie)
 
+
     def movie_button_action(self):
-        print("selected genres: ")
-        print('---------')
+        form = AddMovieFormValidation(self.genre_checkboxes, self.txt_movie)
+        if not form.is_valid(): return
         selected_genres = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
-        print(selected_genres)
-        selected_genre_ids = set(genre.genre_id for genre in get_genres() if genre.name in selected_genres)
-        print("selected genre IDs: ")
-        print(selected_genre_ids)
+        genre_id_list = set(genre.genre_id for genre in get_genres() if genre.name in selected_genres)
+        last_inserted_movie_id = db.add_movie(self.txt_movie.text())
+        db.add_movie_genres(last_inserted_movie_id, genre_id_list)
+        form.clear_form()
+        MyMessageBox.show_message_box('Movie Added', QMessageBox.Icon.Information)
 
     def create_genre_checkboxes(self):
         return [QCheckBox(genre.name, self) for genre in get_genres()]
@@ -53,7 +55,7 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = AddMovieForm()
     window.show()
     sys.exit(app.exec())
 

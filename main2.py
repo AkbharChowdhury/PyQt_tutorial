@@ -8,8 +8,16 @@ from PyQt6.QtWidgets import (QApplication,
                              QLabel,
                              QPushButton, QLineEdit)
 
-from MyCounter import MyCounter
 from genres import Genre
+
+
+class MyCounter:
+    def __init__(self):
+        self._num = 0
+
+    def number(self):
+        self._num += 1
+        return self._num
 
 
 def get_genres():
@@ -45,8 +53,6 @@ class MainWindow(QMainWindow):
         self.txt_movie = QLineEdit(parent=self)
         self.layout.addWidget(self.txt_movie)
 
-
-
         self.add_genres()
 
         central_widget.setLayout(self.layout)
@@ -55,8 +61,6 @@ class MainWindow(QMainWindow):
         self.combo = QComboBox(self)
         for genre in get_genres():
             self.combo.addItem(genre.name, genre.genre_id)
-
-
 
         btn_add_movie = QPushButton('add movie'.title(), self)
         btn_add_movie.clicked.connect(self.add_movie_clicked)
