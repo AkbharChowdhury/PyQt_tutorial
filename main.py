@@ -10,28 +10,14 @@ from PyQt6.QtWidgets import (QApplication,
                              )
 
 from MyCounter import MyCounter
+from db import Database
 from genres import Genre
 
 
 def get_genres():
-    n = MyCounter()
-    return [
-        Genre('Action', n.number()),
-        Genre('Adventure', n.number()),
-        Genre('Animation', n.number()),
-        Genre('Children', n.number()),
-        Genre('Comedy', n.number()),
-        Genre('Crime', n.number()),
-        Genre('Documentary', n.number()),
-        Genre('Drama', n.number()),
-        Genre('Fantasy', n.number()),
-        Genre('Horror', n.number()),
-        Genre('Musical', n.number()),
-        Genre('Mystery', n.number()),
-        Genre('Romance', n.number()),
-        Genre('Sci-Fi', n.number()),
-        Genre('Thriller', n.number()),
-    ]
+    # return [Genre(row[0], row[1]) for row in db.fetch_all_genres()]
+    return db.fetch_all_genres()
+
 
 
 class MainWindow(QMainWindow):
@@ -75,4 +61,5 @@ def main():
 
 
 if __name__ == '__main__':
+    db = Database()
     main()
