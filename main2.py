@@ -45,21 +45,33 @@ class MainWindow(QMainWindow):
         self.txt_movie = QLineEdit(parent=self)
         self.layout.addWidget(self.txt_movie)
 
+
+
         self.add_genres()
 
         central_widget.setLayout(self.layout)
         self.setCentralWidget(central_widget)
 
+        self.combo = QComboBox(self)
+        for genre in get_genres():
+            self.combo.addItem(genre.name, genre.genre_id)
+
+
+
         btn_add_movie = QPushButton('add movie'.title(), self)
         btn_add_movie.clicked.connect(self.add_movie_clicked)
+        self.layout.addWidget(self.combo)
         self.layout.addWidget(btn_add_movie)
 
     def add_movie_clicked(self):
-        pass
+        print(self.combo.currentText())
+        print(self.combo.currentData())
+
     def add_genres(self):
         for genre in get_genres():
             checkbox = QCheckBox(genre.name, self)
             self.layout.addWidget(checkbox)
+            # checkbox.stateChanged.connect(self.checkbox_state_changed)
 
 
 def main():
