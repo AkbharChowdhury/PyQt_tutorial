@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QCheckBox, QMessageBox, QLineEdit
 
-from utils.messageboxes import  MyMessageBox
+from utils.messageboxes import MyMessageBox
+
 
 class AddMovieFormValidation:
 
@@ -22,8 +23,4 @@ class AddMovieFormValidation:
         return True
 
     def _has_selected_genre(self):
-        for checkbox in self._checkbox_genres:
-            if checkbox.isChecked():
-                return True
-        return False
-
+        return len(list(filter(lambda checkbox: checkbox.isChecked(), self._checkbox_genres))) > 0
