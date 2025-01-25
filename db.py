@@ -1,5 +1,5 @@
 import psycopg2
-from config import  load_config
+from config import load_config
 from models.genres import Genre
 
 
@@ -29,6 +29,3 @@ class Database:
                         'movie_id': movie_id,
                         'genre_id': genre_id,
                     })
-
-
-db = Database()

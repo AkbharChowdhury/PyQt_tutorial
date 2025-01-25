@@ -34,7 +34,6 @@ class AddMovieForm(QMainWindow):
 
         btn_add_movie = QPushButton('add movie'.title(), self)
         btn_add_movie.clicked.connect(self.movie_button_action)
-
         self.layout.addWidget(btn_add_movie)
 
 
