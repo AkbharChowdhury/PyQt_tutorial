@@ -38,11 +38,11 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Add Movie")
-
         central_widget = QWidget()
+
         self.layout = QVBoxLayout()
         self.layout.addWidget(QLabel("Movie"))
-        self.txt_movie = QLineEdit(parent=self)
+        self.txt_movie = QLineEdit(self)
         self.layout.addWidget(self.txt_movie)
 
         self.add_genres()
