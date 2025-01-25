@@ -13,7 +13,6 @@ from db import Database
 from form_validation import AddMovieFormValidation
 from messageboxes import MyMessageBox
 
-
 def get_genres():
     return db.fetch_all_genres()
 

@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (QApplication,
                              QLabel,
                              QPushButton, QLineEdit)
 
-from genres import Genre
+from models.genres import Genre
 
 
 class MyCounter:
