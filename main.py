@@ -10,8 +10,8 @@ from PyQt6.QtWidgets import (QApplication,
                              )
 
 from db import Database
-from form_validation import AddMovieFormValidation
-from messageboxes import MyMessageBox
+from utils.form_validation import AddMovieFormValidation
+from utils.messageboxes import MyMessageBox
 
 def get_genres():
     return db.fetch_all_genres()
