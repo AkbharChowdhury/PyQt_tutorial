@@ -1,32 +1,28 @@
 import sys
 
-from PyQt6.QtCore import QEvent
-
 from db import Database
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel
+from search_movie import SearchMovie
 
 
 class AdminPanelWindow(QWidget):
-    def search(self, text: str, genre: str):
-        print('----------------- ------------------------------')
-        for i in db.fetch_movies(text, genre):
-            print(i)
 
     def text_changed(self, text):
-        self.movie_title = text
-        self.search(text=text, genre=self.genre)
+        self.search.title = text
+        self.search.filter_movie()
 
     def combobox_changed(self):
         genre_text = '' if self.combobox.currentText() == 'Any' else self.combobox.currentText()
-        self.genre = genre_text
-        self.search(text=self.text_box.text(), genre=genre_text)
+        self.search.genre = genre_text
+        self.search.filter_movie()
 
     def __init__(self):
         super().__init__()
         self.movie_title = ''
         self.genre = ''
-        self.search('','')
+        self.search = SearchMovie(title='', genre='', db=db)
+        self.search.filter_movie()
         self.setWindowTitle("admin panel".title())
         self.text_box = QLineEdit()
         outer_layout = QVBoxLayout()
