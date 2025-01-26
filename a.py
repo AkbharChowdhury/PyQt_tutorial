@@ -1,3 +1,9 @@
 from db import Database
 db = Database()
-print(db.delete('movie_id','movies',47))
+movies = db.fetch_movies()
+data: dict[str, str] = list(filter(lambda x: x['movie_id'] == 33, movies))[0]
+print(data)
+genres = data.get('genres')
+print(genres.split(' | '))
+# print(db.fetch_movie_title(27))
+# print(db.delete('movie_id','movies',47))

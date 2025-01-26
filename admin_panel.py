@@ -18,10 +18,8 @@ class AdminPanelWindow(QWidget):
     def edit_movie(self):
         MovieInfo.MOVIE_ID = self.movies[self.get_selected_table_index()].get('movie_id')
         MovieInfo.TITLE = self.movies[self.get_selected_table_index()].get('title')
-        self.open_movie_window2 = WindowManager()
-        self.open_movie_window2.show_new_window(EditMovieForm())
-        # window = WindowManager()
-        # window.show_new_window(EditMovieForm())
+        self.open_edit_movie_window = WindowManager()
+        self.open_edit_movie_window.show_new_window(EditMovieForm())
 
     def text_changed(self, text):
         self.search.title = text
@@ -95,12 +93,10 @@ class AdminPanelWindow(QWidget):
         btn_edit_movie = QPushButton("edit movie".title())
         btn_delete_movie = QPushButton("delete movie".title())
         open_movie_window = WindowManager()
-        self.open_movie_window2 = WindowManager()
+        self.open_edit_movie_window = WindowManager()
 
-        open_edit_movie_window = WindowManager()
         btn_add_movie.clicked.connect(lambda x: open_movie_window.show_new_window(AddMovieForm()))
         btn_delete_movie.clicked.connect(self.delete_movie)
-        # btn_edit_movie.clicked.connect(self.edit_movie)
         btn_edit_movie.clicked.connect(self.edit_movie)
 
         # btn_edit_movie.clicked.connect(lambda x: open_edit_movie_window.show_new_window(EditMovieForm()))
