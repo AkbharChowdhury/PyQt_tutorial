@@ -1,10 +1,13 @@
 from db import Database
+from models.genres import Genre
+
 db = Database()
 movies = db.fetch_movies()
-print(movies)
-data: dict[str, str] = list(filter(lambda x: x['movie_id'] == 40, movies))[0]
-print(data)
-genres = data.get('genres')
-print(genres.split(' | '))
-# print(db.fetch_movie_title(27))
-# print(db.delete('movie_id','movies',47))
+print(f'{movies=}')
+movie_id: int = 46
+data: dict[str, str] = list(filter(lambda x: x['movie_id'] == movie_id, movies))[0]
+print(f'{data=}')
+genres: list[str] = data.get('genres').split(Genre.genre_split())
+title: str = data.get('title')
+print(f'{genres=}')
+print(f'{title=}')

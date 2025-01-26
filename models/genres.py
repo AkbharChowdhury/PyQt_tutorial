@@ -5,3 +5,6 @@ from dataclasses import dataclass
 class Genre:
     name: str
     genre_id: int
+    @staticmethod
+    def genre_split():
+        return ' | '
