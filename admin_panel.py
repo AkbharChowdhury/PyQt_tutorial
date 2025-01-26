@@ -3,8 +3,10 @@ import sys
 from db import Database
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel
-from search_movie import SearchMovie
 
+from main import AddMovieForm
+from search_movie import SearchMovie
+from window_manager import WindowManager
 
 class AdminPanelWindow(QWidget):
 
@@ -20,6 +22,7 @@ class AdminPanelWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.movie_title = ''
+
         self.genre = ''
         self.search = SearchMovie(title='', genre='', db=db)
         self.search.filter_movie()
@@ -49,8 +52,11 @@ class AdminPanelWindow(QWidget):
         middle_layout.addWidget(QCheckBox("Option three"))
 
         bottom_layout = QGridLayout()
+        btn_add_movie = QPushButton("add movie".title())
+        open_movie_window = WindowManager()
+        btn_add_movie.clicked.connect(lambda x: open_movie_window.show_new_window(AddMovieForm()))
 
-        bottom_layout.addWidget(QPushButton("add movie".title()), 0, 0)
+        bottom_layout.addWidget(btn_add_movie, 0, 0)
         bottom_layout.addWidget(QPushButton("edit movie".title()), 0, 1)
         bottom_layout.addWidget(QPushButton("delete movie".title()), 0, 2)
 
