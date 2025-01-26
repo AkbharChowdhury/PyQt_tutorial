@@ -10,7 +10,6 @@ from PyQt6.QtWidgets import (QApplication,
 
 from models.genres import Genre
 
-
 class MyCounter:
     def __init__(self):
         self._num = 0
@@ -41,11 +40,23 @@ def get_genres():
         Genre('Thriller', n.number()),
     ]
 
+class NewWindow(QMainWindow):
 
-class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Add Movie")
+        self.setWindowTitle("new window".title())
+class MainWindow(QMainWindow):
+
+    def show_new_window(self):
+        print('called')
+
+    def __init__(self):
+        super().__init__()
+
+
+        self.setWindowTitle("New Main")
+
+
 
         central_widget = QWidget()
         self.layout = QVBoxLayout()
@@ -68,8 +79,13 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(btn_add_movie)
 
     def add_movie_clicked(self):
-        print(self.combo.currentText())
-        print(self.combo.currentData())
+
+        window = NewWindow()
+        window.show()
+
+        # self.show_new_window()
+        # print(self.combo.currentText())
+        # print(self.combo.currentData())
 
     def add_genres(self):
         for genre in get_genres():

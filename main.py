@@ -14,13 +14,22 @@ from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
 
 def get_genres():
+    db = Database()
+
     return db.fetch_all_genres()
 
-
-class AddMovieForm(QMainWindow):
+class AnotherWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Add Movie".title())
+class AddMovieForm(QMainWindow):
+
+
+    def __init__(self):
+        super().__init__()
+
+
         self.setWindowTitle("Add Movie".title())
         central_widget = QWidget()
         self.layout = QVBoxLayout()
@@ -60,7 +69,7 @@ def main():
 
 if __name__ == '__main__':
     db = Database()
-    movies = db.fetch_movies( genre='romance')
+    movies = db.fetch_movies(genre='romance')
 
     # for i in movies:
     #     print(i.get('title'), i.get('genres'))
