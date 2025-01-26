@@ -1,5 +1,6 @@
 import sys
 
+from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout
 
@@ -23,7 +24,6 @@ class AdminPanelWindow(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.movie_table = MovieTable()
 
         self.setWindowTitle("admin panel".title())
 
@@ -52,15 +52,16 @@ class AdminPanelWindow(QWidget):
         top_layout.addWidget(self.combobox, 0, 3)
 
         self.data_group_box = QGroupBox("Movies")
-        self.data_view = QTreeView()
-        self.data_view.setRootIsDecorated(False)
-        self.data_view.setAlternatingRowColors(True)
+        self.table = QTreeView()
+
+        self.table.setRootIsDecorated(False)
+        self.table.setAlternatingRowColors(True)
 
         data_layout = QHBoxLayout()
-        data_layout.addWidget(self.data_view)
+        data_layout.addWidget(self.table)
         self.data_group_box.setLayout(data_layout)
-        self.model = self.movie_table.create_model(self)
-        self.data_view.setModel(self.model)
+        self.movie_table = MovieTable()
+        self.model = None
         self.populate_treeview()
 
         bottom_layout = QGridLayout()
@@ -84,13 +85,13 @@ class AdminPanelWindow(QWidget):
 
     def populate_treeview(self):
         self.model = self.movie_table.create_model(self)
-        self.data_view.setModel(self.model)
+        self.table.setModel(self.model)
         for movie in self.search.filter_movie():
             movie_data = {
                 MovieColumn.MOVIE.name: movie.get('title'),
                 MovieColumn.GENRE.name: movie.get('genres')
             }
-            self.movie_table.add_movie(self.model, movie_data)
+            MovieTable.add_movie(self.model, movie_data)
 
 
 def main():

@@ -28,6 +28,7 @@ class App(QWidget):
 
         self.data_group_box = QGroupBox("Movies")
         self.data_view = QTreeView()
+        self.data_view.resizeColumnToContents(2)
         self.data_view.setRootIsDecorated(False)
         self.data_view.setAlternatingRowColors(True)
 
