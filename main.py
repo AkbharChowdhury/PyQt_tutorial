@@ -47,6 +47,7 @@ class AddMovieForm(QMainWindow):
 
 
     def movie_button_action(self):
+        db = Database()
         form = AddMovieFormValidation(self.genre_checkboxes, self.txt_movie)
         if not form.is_valid(): return
         selected_genres = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]

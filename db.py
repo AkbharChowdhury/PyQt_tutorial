@@ -5,6 +5,13 @@ import psycopg2.extras
 
 
 class Database:
+
+    def fetch_movie_genres(self) -> list[Genre]:
+        with psycopg2.connect(**load_config()) as conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM available_movie_genres")
+                return [Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()]
+
     def fetch_all_genres(self) -> list[Genre]:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:

@@ -8,7 +8,4 @@ class SearchMovie:
         self.db: Database = db
 
     def filter_movie(self):
-        print(f'----------------------{self.genre}---------------------------------')
-        for i in self.db.fetch_movies(self.title, self.genre):
-            print(i)
-        print('-------------------------------------------------------')
+        return self.db.fetch_movies(self.title, self.genre)
