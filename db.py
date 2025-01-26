@@ -38,6 +38,14 @@ class Database:
                 cursor.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', (name,))
                 return cursor.fetchone()[0]
 
+    def delete(self, id_field: str, table: str, num: int):
+        config = load_config()
+        with psycopg2.connect(**config) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(f'DELETE FROM {table} WHERE {id_field} = %s RETURNING {id_field};'
+                               , (num,))
+                return cursor.fetchone()[0]
+
     def add_movie_genres(self, movie_id: int, genre_id_list: set[int]):
         config = load_config()
         with psycopg2.connect(**config) as conn:

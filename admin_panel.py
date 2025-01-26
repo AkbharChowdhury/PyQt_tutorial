@@ -3,15 +3,25 @@ import sys
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout, QMessageBox
 
+import movie
 from db import Database
 from main import AddMovieForm
 from models.movie_table import MovieTable, MovieColumn
+from movie import MovieInfo
 from search_movie import SearchMovie
 from utils.messageboxes import MyMessageBox
 from window_manager import WindowManager
+from edit_movie_form import EditMovieForm
 
 
 class AdminPanelWindow(QWidget):
+    def edit_movie(self):
+        MovieInfo.MOVIE_ID = self.movies[self.get_selected_table_index()].get('movie_id')
+        MovieInfo.TITLE = self.movies[self.get_selected_table_index()].get('title')
+        self.open_movie_window2 = WindowManager()
+        self.open_movie_window2.show_new_window(EditMovieForm())
+        # window = WindowManager()
+        # window.show_new_window(EditMovieForm())
 
     def text_changed(self, text):
         self.search.title = text
@@ -23,27 +33,24 @@ class AdminPanelWindow(QWidget):
         self.populate_table()
 
     def delete_movie(self):
-        # index = self.table.selectedIndexes()[-1]
-        # crawler = index.model().itemData(index)
-        # print(crawler)
 
-        if not self.table.selectedIndexes():
+        if not self.tree.selectedIndexes():
             MyMessageBox.show_message_box('Please choose a movie from the table', QMessageBox.Icon.Warning)
             return
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
-            # print(self.table.selectedIndexes()[0])
-            # self.table.model().removeRow(0)
+            index = self.get_selected_table_index()
+            db.delete('movie_id', 'movies', self.movies[index].get('movie_id'))
+            self.tree.model().removeRow(index)
             pass
 
     def get_selected_table_index(self):
-        index = self.table.selectedIndexes()[0]
-        return index
-
+        return self.tree.selectedIndexes()[0].row()
 
     def __init__(self):
         super().__init__()
-        self.ALL_MOVIES = db.fetch_movies('', '')
+        self.movies = db.fetch_movies()
+        self.movies.reverse()
 
         self.setWindowTitle("admin panel".title())
 
@@ -72,12 +79,12 @@ class AdminPanelWindow(QWidget):
         top_layout.addWidget(self.combobox, 0, 3)
 
         self.data_group_box = QGroupBox("Movies")
-        self.table = QTreeView()
-        self.table.setRootIsDecorated(False)
-        self.table.setAlternatingRowColors(True)
+        self.tree = QTreeView()
+        self.tree.setRootIsDecorated(False)
+        self.tree.setAlternatingRowColors(True)
 
         data_layout = QHBoxLayout()
-        data_layout.addWidget(self.table)
+        data_layout.addWidget(self.tree)
         self.data_group_box.setLayout(data_layout)
         self.movie_table = MovieTable()
         self.model = None
@@ -88,9 +95,15 @@ class AdminPanelWindow(QWidget):
         btn_edit_movie = QPushButton("edit movie".title())
         btn_delete_movie = QPushButton("delete movie".title())
         open_movie_window = WindowManager()
+        self.open_movie_window2 = WindowManager()
+
+        open_edit_movie_window = WindowManager()
         btn_add_movie.clicked.connect(lambda x: open_movie_window.show_new_window(AddMovieForm()))
         btn_delete_movie.clicked.connect(self.delete_movie)
-        # self.table.model().removeRow(0)
+        # btn_edit_movie.clicked.connect(self.edit_movie)
+        btn_edit_movie.clicked.connect(self.edit_movie)
+
+        # btn_edit_movie.clicked.connect(lambda x: open_edit_movie_window.show_new_window(EditMovieForm()))
         bottom_layout.addWidget(btn_add_movie, 0, 0)
         bottom_layout.addWidget(btn_edit_movie, 0, 1)
         bottom_layout.addWidget(btn_delete_movie, 0, 2)
@@ -102,18 +115,16 @@ class AdminPanelWindow(QWidget):
         outer_layout.addLayout(middle_layout)
         outer_layout.addLayout(bottom_layout)
         self.setLayout(outer_layout)
-        self.table.setColumnWidth(0, 300)
-        self.table.setColumnWidth(1, 300)
-        # self.table.hideColumn(2)
+        self.tree.setColumnWidth(0, 300)
+        self.tree.setColumnWidth(1, 300)
 
     def populate_table(self):
         self.model = self.movie_table.create_model(self)
-        self.table.setModel(self.model)
+        self.tree.setModel(self.model)
         for movie in self.search.filter_movie():
             movie_data = {
                 MovieColumn.MOVIE.name: movie.get('title'),
                 MovieColumn.GENRE.name: movie.get('genres'),
-                MovieColumn.ID.name: movie.get('movie_id'),
             }
 
             MovieTable.add_movie(self.model, movie_data)

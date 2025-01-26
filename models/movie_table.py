@@ -11,7 +11,6 @@ counter = MyCounter(start_index=-1)
 class MovieColumn(Enum):
     MOVIE = counter.get_counter()
     GENRE = counter.get_counter()
-    ID = counter.get_counter()
 
 
 class MovieTable:

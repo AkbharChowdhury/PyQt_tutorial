@@ -10,26 +10,20 @@ from PyQt6.QtWidgets import (QApplication,
                              )
 
 from db import Database
+from movie import MovieInfo
 from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
-
 def get_genres():
     db = Database()
 
     return db.fetch_all_genres()
-
-class AnotherWindow(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Add Movie".title())
-class AddMovieForm(QMainWindow):
+class EditMovieForm(QMainWindow):
 
     def __init__(self):
         super().__init__()
 
-
-        self.setWindowTitle("Add Movie".title())
+        # "Edit Movie".title()
+        self.setWindowTitle(str(MovieInfo.MOVIE_ID) + " " + MovieInfo.TITLE)
         central_widget = QWidget()
         self.layout = QVBoxLayout()
         self.layout.addWidget(QLabel("Movie"))
@@ -62,15 +56,11 @@ class AddMovieForm(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    window = AddMovieForm()
+    window = EditMovieForm()
     window.show()
     sys.exit(app.exec())
 
 
 if __name__ == '__main__':
     db = Database()
-    movies = db.fetch_movies(genre='romance')
-
-    # for i in movies:
-    #     print(i.get('title'), i.get('genres'))
     main()
