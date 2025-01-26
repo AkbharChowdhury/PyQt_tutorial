@@ -3,16 +3,21 @@ from enum import Enum
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItemModel
 
+from models.my_counter import MyCounter
+
+
+counter = MyCounter(start_index=-1)
 
 class MovieColumn(Enum):
-    MOVIE = 0
-    GENRE = 1
+    MOVIE = counter.get_counter()
+    GENRE = counter.get_counter()
+    ID = counter.get_counter()
 
 
 class MovieTable:
 
     def create_model(self, parent):
-        model = QStandardItemModel(0, 2, parent)
+        model = QStandardItemModel(0, len(MovieColumn), parent)
         horizontal = Qt.Orientation.Horizontal
         for column in MovieColumn:
             model.setHeaderData(column.value, horizontal, column.name.title())

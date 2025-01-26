@@ -29,7 +29,6 @@ class Database:
                         'title': row['title'],
                         'genres': row['genres'],
                     })
-
                 return movies
 
     def add_movie(self, name):
