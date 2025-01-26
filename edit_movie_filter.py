@@ -1,7 +1,8 @@
 from db import Database
 db = Database()
 movies = db.fetch_movies()
-data: dict[str, str] = list(filter(lambda x: x['movie_id'] == 33, movies))[0]
+print(movies)
+data: dict[str, str] = list(filter(lambda x: x['movie_id'] == 40, movies))[0]
 print(data)
 genres = data.get('genres')
 print(genres.split(' | '))
