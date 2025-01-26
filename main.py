@@ -60,4 +60,8 @@ def main():
 
 if __name__ == '__main__':
     db = Database()
+    movies = db.fetch_movies( genre='romance')
+    
+    # for i in movies:
+    #     print(i.get('title'), i.get('genres'))
     main()
