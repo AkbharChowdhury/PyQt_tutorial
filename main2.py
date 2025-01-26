@@ -73,6 +73,7 @@ class MainWindow(QMainWindow):
         for genre in get_genres():
             self.combo.addItem(genre.name, genre.genre_id)
 
+
         btn_add_movie = QPushButton('add movie'.title(), self)
         btn_add_movie.clicked.connect(self.add_movie_clicked)
         self.layout.addWidget(self.combo)
