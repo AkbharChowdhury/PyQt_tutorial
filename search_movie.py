@@ -1,5 +1,6 @@
 from db import Database
 
+
 class SearchMovie:
     def __init__(self, title, genre, db: Database):
         self.title: str = title
