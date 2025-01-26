@@ -1,0 +1,2 @@
+PyQt treeview:
+https://pythonspot.com/pyqt5-treeview/

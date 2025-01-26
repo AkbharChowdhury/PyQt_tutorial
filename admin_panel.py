@@ -1,19 +1,16 @@
 import sys
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QStandardItemModel
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout
 
 from db import Database
 from main import AddMovieForm
+from models.movie_table import MovieTable, MovieColumn
 from search_movie import SearchMovie
 from window_manager import WindowManager
-from models.movie_table import MovieTable, MovieColumn
 
 
 class AdminPanelWindow(QWidget):
-
 
     def text_changed(self, text):
         self.search.title = text
@@ -27,7 +24,6 @@ class AdminPanelWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.movie_table = MovieTable()
-
 
         self.setWindowTitle("admin panel".title())
 
@@ -63,7 +59,7 @@ class AdminPanelWindow(QWidget):
         data_layout = QHBoxLayout()
         data_layout.addWidget(self.data_view)
         self.data_group_box.setLayout(data_layout)
-        self.model = self.movie_table.create_movie_model(self)
+        self.model = self.movie_table.create_model(self)
         self.data_view.setModel(self.model)
         self.populate_treeview()
 
@@ -88,14 +84,15 @@ class AdminPanelWindow(QWidget):
 
     def populate_treeview(self):
         self.model.clear()
-        self.model = self.movie_table.create_movie_model(self)
+        self.model = self.movie_table.create_model(self)
         self.data_view.setModel(self.model)
         for movie in self.search.filter_movie():
             movie_data = {
-                'title': movie.get('title'),
-                'genres': movie.get('genres')
+                MovieColumn.MOVIE.name: movie.get('title'),
+                MovieColumn.GENRE.name: movie.get('genres')
             }
-            self.movie_table.add_movie(self.model, movie.get('title'), movie.get('genres'), movie_data)
+
+            self.movie_table.add_movie(self.model, movie_data)
 
 
 def main():
