@@ -1,6 +1,5 @@
 import sys
 
-from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout
 
@@ -18,7 +17,7 @@ class AdminPanelWindow(QWidget):
         self.populate_treeview()
 
     def combobox_changed(self):
-        genre_text = '' if self.combobox.currentText() == 'Any' else self.combobox.currentText()
+        genre_text = '' if self.combobox.currentText() == SearchMovie.all_genres() else self.combobox.currentText()
         self.search.genre = genre_text
         self.populate_treeview()
 
@@ -44,7 +43,7 @@ class AdminPanelWindow(QWidget):
         self.text_box.textEdited.connect(self.text_changed)
 
         self.combobox = QComboBox()
-        self.combobox.addItem("Any")
+        self.combobox.addItem(SearchMovie.all_genres())
         [self.combobox.addItem(row.name) for row in db.fetch_movie_genres()]
         self.combobox.activated.connect(self.combobox_changed)
 
