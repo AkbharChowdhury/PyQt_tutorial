@@ -18,7 +18,7 @@ class MovieTable:
             model.setHeaderData(column.value, horizontal, column.name.title())
         return model
 
-    def add_movie(self, model: QStandardItemModel, data: dict[str, str]):
+    def add_movie(self, model: QStandardItemModel, movies: dict[str, str]):
         model.insertRow(0)
-        for key, value in data.items():
+        for key, value in movies.items():
             model.setData(model.index(0, MovieColumn[key].value), value)

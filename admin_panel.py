@@ -83,7 +83,6 @@ class AdminPanelWindow(QWidget):
         self.setLayout(outer_layout)
 
     def populate_treeview(self):
-        self.model.clear()
         self.model = self.movie_table.create_model(self)
         self.data_view.setModel(self.model)
         for movie in self.search.filter_movie():
@@ -91,7 +90,6 @@ class AdminPanelWindow(QWidget):
                 MovieColumn.MOVIE.name: movie.get('title'),
                 MovieColumn.GENRE.name: movie.get('genres')
             }
-
             self.movie_table.add_movie(self.model, movie_data)
 
 
