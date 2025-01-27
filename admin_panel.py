@@ -13,13 +13,24 @@ from window_manager import WindowManager
 from database import Database
 
 
+def movies():
+    db = Database()
+    movies = db.fetch_movies()
+    movies.reverse()
+    return movies
+
+
 class AdminPanelWindow(QWidget):
+
     def edit_movie(self):
-        self.movies = self.db.fetch_movies()
 
         index = self.get_selected_table_index()
-        selected_index = index - 1 if self.has_deleted_movie else index
-        MovieInfo.MOVIE_ID = self.movies[selected_index].get('movie_id')
+        # selected_index = index - 1 if self.has_deleted_movie else index
+
+
+        self.movies = movies()
+
+        MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
         self.open_edit_movie_window = WindowManager()
         self.open_edit_movie_window.show_new_window(edit_movie_form.EditMovieForm())
 
@@ -47,20 +58,17 @@ class AdminPanelWindow(QWidget):
     def get_selected_table_index(self):
         return self.tree.selectedIndexes()[0].row()
 
+
     def __init__(self):
         super().__init__()
         self.db = Database()
-        self.movies = self.db.fetch_movies()
-        self.movies.reverse()
-
+        self.movies = movies()
         self.has_deleted_movie = False
-
         self.setWindowTitle("admin panel".title())
 
         left, top, width, height = (10, 10, 640, 450)
 
         self.setGeometry(left, top, width, height)
-
         self.movie_title = self.genre = ''
         self.search = SearchMovie(title='', genre='', db=self.db)
         self.search.filter_movie()
