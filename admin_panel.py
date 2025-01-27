@@ -3,23 +3,21 @@ import sys
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout, QMessageBox
 
-import movie
-from db import Database
-from main import AddMovieForm
+import edit_movie_form
+from add_movie_form import AddMovieForm
 from models.movie_table import MovieTable, MovieColumn
 from movie import MovieInfo
 from search_movie import SearchMovie
 from utils.messageboxes import MyMessageBox
 from window_manager import WindowManager
-from edit_movie_form import EditMovieForm
-
+from database import Database
 
 class AdminPanelWindow(QWidget):
     def edit_movie(self):
         MovieInfo.MOVIE_ID = self.movies[self.get_selected_table_index()].get('movie_id')
-        MovieInfo.TITLE = self.movies[self.get_selected_table_index()].get('title')
         self.open_edit_movie_window = WindowManager()
-        self.open_edit_movie_window.show_new_window(EditMovieForm())
+        self.open_edit_movie_window.show_new_window(edit_movie_form.EditMovieForm())
+
 
     def text_changed(self, text):
         self.search.title = text
@@ -38,7 +36,7 @@ class AdminPanelWindow(QWidget):
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
             index = self.get_selected_table_index()
-            db.delete('movie_id', 'movies', self.movies[index].get('movie_id'))
+            self.db.delete('movie_id', 'movies', self.movies[index].get('movie_id'))
             self.tree.model().removeRow(index)
             pass
 
@@ -47,17 +45,19 @@ class AdminPanelWindow(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.movies = db.fetch_movies()
+        self.db = Database()
+        self.movies = self.db.fetch_movies()
         self.movies.reverse()
 
         self.setWindowTitle("admin panel".title())
 
-        left, top, width, height = (10, 10, 640, 240)
+
+        left, top, width, height = (10, 10, 640, 450)
 
         self.setGeometry(left, top, width, height)
 
         self.movie_title = self.genre = ''
-        self.search = SearchMovie(title='', genre='', db=db)
+        self.search = SearchMovie(title='', genre='', db=self.db)
         self.search.filter_movie()
 
         self.text_box = QLineEdit()
@@ -70,7 +70,7 @@ class AdminPanelWindow(QWidget):
 
         self.combobox = QComboBox()
         self.combobox.addItem(SearchMovie.all_genres())
-        [self.combobox.addItem(row.name) for row in db.fetch_movie_genres()]
+        [self.combobox.addItem(row.name) for row in self.db.fetch_movie_genres()]
         self.combobox.activated.connect(self.combobox_changed)
 
         top_layout.addWidget(QLabel("Genre"), 0, 2)
@@ -134,5 +134,5 @@ def main():
 
 
 if __name__ == '__main__':
-    db = Database()
+
     main()

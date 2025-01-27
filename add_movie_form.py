@@ -1,7 +1,6 @@
 import sys
 from PyQt6.QtWidgets import (QApplication,
                              QMainWindow,
-                             QCheckBox,
                              QWidget,
                              QVBoxLayout,
                              QLabel,
@@ -9,25 +8,24 @@ from PyQt6.QtWidgets import (QApplication,
                              QLineEdit, QMessageBox
                              )
 
-from db import Database
+from models.genres import Genre
 from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
+from database import Database
 
-def get_genres():
-    db = Database()
-
-    return db.fetch_all_genres()
 
 class AnotherWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Add Movie".title())
+
+
 class AddMovieForm(QMainWindow):
 
     def __init__(self):
         super().__init__()
-
+        self.db = Database()
 
         self.setWindowTitle("Add Movie".title())
         central_widget = QWidget()
@@ -35,7 +33,8 @@ class AddMovieForm(QMainWindow):
         self.layout.addWidget(QLabel("Movie"))
         self.txt_movie = QLineEdit(self)
         self.layout.addWidget(self.txt_movie)
-        self.genre_checkboxes = self.create_genre_checkboxes()
+        self.genre_checkboxes = Genre.create_genre_checkboxes(self, self.db)
+
         [self.layout.addWidget(genre_checkbox) for genre_checkbox in self.genre_checkboxes]
         central_widget.setLayout(self.layout)
         self.setCentralWidget(central_widget)
@@ -44,20 +43,16 @@ class AddMovieForm(QMainWindow):
         btn_add_movie.clicked.connect(self.movie_button_action)
         self.layout.addWidget(btn_add_movie)
 
-
     def movie_button_action(self):
-        db = Database()
+        db = self.db
         form = AddMovieFormValidation(self.genre_checkboxes, self.txt_movie)
         if not form.is_valid(): return
         selected_genres = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
-        genre_id_list = set(genre.genre_id for genre in get_genres() if genre.name in selected_genres)
+        genre_id_list = set(genre.genre_id for genre in Genre.get_genres(db) if genre.name in selected_genres)
         last_inserted_movie_id = db.add_movie(self.txt_movie.text())
         db.add_movie_genres(last_inserted_movie_id, genre_id_list)
         form.clear_form()
         MyMessageBox.show_message_box('Movie Added', QMessageBox.Icon.Information)
-
-    def create_genre_checkboxes(self):
-        return [QCheckBox(genre.name, self) for genre in get_genres()]
 
 
 def main():
@@ -70,7 +65,4 @@ def main():
 if __name__ == '__main__':
     db = Database()
     movies = db.fetch_movies(genre='romance')
-
-    # for i in movies:
-    #     print(i.get('title'), i.get('genres'))
     main()

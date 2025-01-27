@@ -9,7 +9,7 @@ class Database:
     def fetch_movie_genres(self) -> list[Genre]:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM available_movie_genres")
+                cursor.execute("SELECT genre, genre_id FROM available_movie_genres")
                 return [Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()]
 
     def fetch_all_genres(self) -> list[Genre]:
@@ -38,6 +38,19 @@ class Database:
                 cursor.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', (name,))
                 return cursor.fetchone()[0]
 
+    def update_movie(self, movie_id: int, title: str):
+        config = load_config()
+        with psycopg2.connect(**config) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                                    UPDATE movies 
+                                    SET title = %(title)s
+                                    WHERE movie_id = %(movie_id)s
+                                                            """, {
+                    'title': title,
+                    'movie_id': movie_id,
+                })
+
     def delete(self, id_field: str, table: str, num: int):
         config = load_config()
         with psycopg2.connect(**config) as conn:
@@ -45,7 +58,6 @@ class Database:
                 cursor.execute(f'DELETE FROM {table} WHERE {id_field} = %s RETURNING {id_field};'
                                , (num,))
                 return cursor.fetchone()[0]
-
 
     def add_movie_genres(self, movie_id: int, genre_id_list: set[int]):
         config = load_config()
