@@ -1,3 +1,8 @@
+from PyQt6.QtWidgets import QApplication
+
+import admin_panel
+
+
 class WindowManager:
     def __init__(self):
         super().__init__()
@@ -7,9 +12,10 @@ class WindowManager:
         if self.window is None:
             self.window = win
         self.window.show()
-    def open_new_window_and_close_current(self, windowToClose, windowToOpen):
-        self.show_new_window(windowToOpen)
-        # closeWindow = windowToClose
-        # closeWindow.close()
-        # window = windowToOpen
-        # window.show()
+    @staticmethod
+    def has_closed_admin_panel():
+        for win in QApplication.topLevelWidgets():
+            if win.windowTitle() == 'Admin Panel'.title():
+                win.close()
+                return True
+        return False

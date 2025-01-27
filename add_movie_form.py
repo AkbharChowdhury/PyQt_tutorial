@@ -8,10 +8,12 @@ from PyQt6.QtWidgets import (QApplication,
                              QLineEdit, QMessageBox
                              )
 
+import admin_panel
 from models.genres import Genre
 from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
 from database import Database
+from window_manager import WindowManager
 
 
 class AnotherWindow(QMainWindow):
@@ -22,9 +24,15 @@ class AnotherWindow(QMainWindow):
 
 
 class AddMovieForm(QMainWindow):
+    def window_action(self):
+        if WindowManager.has_closed_admin_panel():
+            self.open_admin_panel = WindowManager()
+            self.open_admin_panel.show_new_window(admin_panel.AdminPanelWindow())
 
     def __init__(self):
         super().__init__()
+        self.open_admin_panel = WindowManager()
+
         self.db = Database()
 
         self.setWindowTitle("Add Movie".title())
@@ -53,6 +61,7 @@ class AddMovieForm(QMainWindow):
         db.add_movie_genres(last_inserted_movie_id, genre_id_list)
         form.clear_form()
         MyMessageBox.show_message_box('Movie Added', QMessageBox.Icon.Information)
+        self.window_action()
 
 
 def main():

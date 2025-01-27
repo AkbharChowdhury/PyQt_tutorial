@@ -49,11 +49,10 @@ class EditMovieForm(QMainWindow):
         self.open_admin_panel = WindowManager()
 
     def window_action(self):
+        if WindowManager.has_closed_admin_panel():
+            self.open_admin_panel = WindowManager()
+            self.open_admin_panel.show_new_window(admin_panel.AdminPanelWindow())
         for win in QApplication.topLevelWidgets():
-            if win.windowTitle() == 'Admin Panel'.title():
-                win.close()
-                self.open_admin_panel = WindowManager()
-                self.open_admin_panel.show_new_window(admin_panel.AdminPanelWindow())
             if win.windowTitle() == 'edit movie'.title():
                 win.destroy(True)
 

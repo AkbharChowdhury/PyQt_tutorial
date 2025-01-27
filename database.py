@@ -55,9 +55,9 @@ class Database:
         config = load_config()
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cursor:
-                cursor.execute(f'DELETE FROM {table} WHERE {id_field} = %s RETURNING {id_field};'
+                cursor.execute(f'DELETE FROM {table} WHERE {id_field} = %s;'
                                , (num,))
-                return cursor.fetchone()[0]
+                # return cursor.fetchone()[0]
 
     def add_movie_genres(self, movie_id: int, genre_id_list: set[int]):
         config = load_config()
