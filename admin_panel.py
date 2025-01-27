@@ -3,8 +3,8 @@ import sys
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout, QMessageBox
 
+import add_movie_form
 import edit_movie_form
-from add_movie_form import AddMovieForm
 from models.movie_table import MovieTable, MovieColumn
 from movie import MovieInfo
 from search_movie import SearchMovie
@@ -20,11 +20,32 @@ def fetch_movies():
     return movies
 
 
-def movie_error_message() -> str :
+def movie_error_message() -> str:
     return 'Please choose a movie from the table'
 
 
+class FormManager:
+    def __init__(self, win):
+        self.win = win
+
+    def show(self):
+        self.win.show()
+
+class Form:
+    def __init__(self, win):
+        self.w = win
+
+    def show_new_window(self, win):
+        # self.w = add_movie_form.AddMovieForm()
+        # self.w = win
+        if self.w is None:
+            self.w = win
+        self.w.show()
+
 class AdminPanelWindow(QWidget):
+    def show_new_window(self, win):
+        self.w = win
+        self.w.show()
 
     def edit_movie(self):
         if not self.tree.selectedIndexes():
@@ -34,8 +55,7 @@ class AdminPanelWindow(QWidget):
         index = self.get_selected_table_index()
         self.movies = fetch_movies()
         MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
-        self.open_edit_movie_window = WindowManager()
-        self.open_edit_movie_window.show_new_window(edit_movie_form.EditMovieForm())
+        self.show_new_window(edit_movie_form.EditMovieForm())
 
     def text_changed(self, text):
         self.search.title = text
@@ -104,10 +124,10 @@ class AdminPanelWindow(QWidget):
         btn_add_movie = QPushButton("add movie".title())
         btn_edit_movie = QPushButton("edit movie".title())
         btn_delete_movie = QPushButton("delete movie".title())
-        open_movie_window = WindowManager()
         self.open_edit_movie_window = WindowManager()
 
-        btn_add_movie.clicked.connect(lambda x: open_movie_window.show_new_window(AddMovieForm()))
+
+        btn_add_movie.clicked.connect(lambda x: self.show_new_window(add_movie_form.AddMovieForm()))
         btn_delete_movie.clicked.connect(self.delete_movie)
         btn_edit_movie.clicked.connect(self.edit_movie)
 

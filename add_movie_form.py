@@ -24,10 +24,13 @@ class AnotherWindow(QMainWindow):
 
 
 class AddMovieForm(QMainWindow):
+    def show_new_window(self, win):
+        self.w = win
+        self.w.show()
     def window_action(self):
         if WindowManager.has_closed_admin_panel():
-            self.open_admin_panel = WindowManager()
-            self.open_admin_panel.show_new_window(admin_panel.AdminPanelWindow())
+            self.show_new_window(admin_panel.AdminPanelWindow())
+
 
     def __init__(self):
         super().__init__()
