@@ -13,7 +13,7 @@ from window_manager import WindowManager
 from database import Database
 
 
-def movies():
+def fetch_movies():
     db = Database()
     movies = db.fetch_movies()
     movies.reverse()
@@ -25,8 +25,7 @@ class AdminPanelWindow(QWidget):
     def edit_movie(self):
 
         index = self.get_selected_table_index()
-        self.movies = movies()
-
+        self.movies = fetch_movies()
         MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
         self.open_edit_movie_window = WindowManager()
         self.open_edit_movie_window.show_new_window(edit_movie_form.EditMovieForm())
@@ -41,7 +40,6 @@ class AdminPanelWindow(QWidget):
         self.populate_table()
 
     def delete_movie(self):
-
         if not self.tree.selectedIndexes():
             MyMessageBox.show_message_box('Please choose a movie from the table', QMessageBox.Icon.Warning)
             return
@@ -57,7 +55,7 @@ class AdminPanelWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.db = Database()
-        self.movies = movies()
+        self.movies = fetch_movies()
         self.setWindowTitle("admin panel".title())
 
         left, top, width, height = (10, 10, 640, 450)

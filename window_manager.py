@@ -1,7 +1,5 @@
 from PyQt6.QtWidgets import QApplication
 
-import admin_panel
-
 
 class WindowManager:
     def __init__(self):
@@ -12,6 +10,7 @@ class WindowManager:
         if self.window is None:
             self.window = win
         self.window.show()
+
     @staticmethod
     def has_closed_admin_panel():
         for win in QApplication.topLevelWidgets():
