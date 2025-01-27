@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import (QApplication,
                              )
 
 import admin_panel
-from admin_panel import AdminPanelWindow
 from models.genres import Genre
 from movie import MovieInfo
 from utils.form_validation import AddMovieFormValidation
@@ -51,7 +50,7 @@ class EditMovieForm(QMainWindow):
 
     def window_action(self):
         for win in QApplication.topLevelWidgets():
-            if win.windowTitle() == 'Admin Panel':
+            if win.windowTitle() == 'Admin Panel'.title():
                 win.close()
                 self.open_admin_panel = WindowManager()
                 self.open_admin_panel.show_new_window(admin_panel.AdminPanelWindow())
@@ -70,7 +69,6 @@ class EditMovieForm(QMainWindow):
         db.delete('movie_id', 'movie_genres', MovieInfo.MOVIE_ID)
         db.add_movie_genres(MovieInfo.MOVIE_ID, genre_id_list)
         MyMessageBox.show_message_box('Movie updated', QMessageBox.Icon.Information)
-
         self.window_action()
 
 

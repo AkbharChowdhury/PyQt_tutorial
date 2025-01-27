@@ -12,12 +12,16 @@ from utils.messageboxes import MyMessageBox
 from window_manager import WindowManager
 from database import Database
 
+
 class AdminPanelWindow(QWidget):
     def edit_movie(self):
-        MovieInfo.MOVIE_ID = self.movies[self.get_selected_table_index()].get('movie_id')
+        self.movies = self.db.fetch_movies()
+
+        index = self.get_selected_table_index()
+        selected_index = index - 1 if self.has_deleted_movie else index
+        MovieInfo.MOVIE_ID = self.movies[selected_index].get('movie_id')
         self.open_edit_movie_window = WindowManager()
         self.open_edit_movie_window.show_new_window(edit_movie_form.EditMovieForm())
-
 
     def text_changed(self, text):
         self.search.title = text
@@ -38,7 +42,7 @@ class AdminPanelWindow(QWidget):
             index = self.get_selected_table_index()
             self.db.delete('movie_id', 'movies', self.movies[index].get('movie_id'))
             self.tree.model().removeRow(index)
-            pass
+            self.has_deleted_movie = True
 
     def get_selected_table_index(self):
         return self.tree.selectedIndexes()[0].row()
@@ -49,8 +53,9 @@ class AdminPanelWindow(QWidget):
         self.movies = self.db.fetch_movies()
         self.movies.reverse()
 
-        self.setWindowTitle("admin panel".title())
+        self.has_deleted_movie = False
 
+        self.setWindowTitle("admin panel".title())
 
         left, top, width, height = (10, 10, 640, 450)
 
@@ -134,5 +139,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     main()
