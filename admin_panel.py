@@ -27,7 +27,6 @@ class AdminPanelWindow(QWidget):
         index = self.get_selected_table_index()
         # selected_index = index - 1 if self.has_deleted_movie else index
 
-
         self.movies = movies()
 
         MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
@@ -57,7 +56,6 @@ class AdminPanelWindow(QWidget):
 
     def get_selected_table_index(self):
         return self.tree.selectedIndexes()[0].row()
-
 
     def __init__(self):
         super().__init__()
@@ -112,7 +110,6 @@ class AdminPanelWindow(QWidget):
         btn_delete_movie.clicked.connect(self.delete_movie)
         btn_edit_movie.clicked.connect(self.edit_movie)
 
-        # btn_edit_movie.clicked.connect(lambda x: open_edit_movie_window.show_new_window(EditMovieForm()))
         bottom_layout.addWidget(btn_add_movie, 0, 0)
         bottom_layout.addWidget(btn_edit_movie, 0, 1)
         bottom_layout.addWidget(btn_delete_movie, 0, 2)
