@@ -1,12 +1,6 @@
 from dataclasses import dataclass
 
 from PyQt6.QtWidgets import QCheckBox
-
-# from database import Database
-
-
-# from database import Database
-
 @dataclass(frozen=True)
 class Genre:
     name: str
