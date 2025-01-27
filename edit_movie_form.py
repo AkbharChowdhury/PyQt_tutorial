@@ -44,8 +44,8 @@ class EditMovieForm(QMainWindow):
 
         btn_edit_movie = QPushButton('update movie'.title(), self)
         btn_edit_movie.clicked.connect(self.movie_button_action)
-        self.layout.addWidget(btn_edit_movie)
 
+        self.layout.addWidget(btn_edit_movie)
         self.open_admin_panel = WindowManager()
 
     def window_action(self):

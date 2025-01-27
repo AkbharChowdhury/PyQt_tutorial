@@ -20,9 +20,16 @@ def fetch_movies():
     return movies
 
 
+def movie_error_message() -> str :
+    return 'Please choose a movie from the table'
+
+
 class AdminPanelWindow(QWidget):
 
     def edit_movie(self):
+        if not self.tree.selectedIndexes():
+            MyMessageBox.show_message_box(movie_error_message(), QMessageBox.Icon.Warning)
+            return
 
         index = self.get_selected_table_index()
         self.movies = fetch_movies()
@@ -41,7 +48,7 @@ class AdminPanelWindow(QWidget):
 
     def delete_movie(self):
         if not self.tree.selectedIndexes():
-            MyMessageBox.show_message_box('Please choose a movie from the table', QMessageBox.Icon.Warning)
+            MyMessageBox.show_message_box(movie_error_message(), QMessageBox.Icon.Warning)
             return
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
