@@ -24,25 +24,24 @@ class Database:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT movie_id, title, genres FROM fn_get_movies('%{title}%','%{genre}%')")
-                columns = ['movie_id', 'title', 'genres']
-                movie_id, title, genres = columns
+                # columns = ['movie_id', 'title', 'genres']
+                # movie_id, title, genres = columns
 
                 movies = []
-                movies = [{ k:v for (k,v) in zip(keys, values)}  ]
-                for row in cursor.fetchall():
-                    movies.append({
-                        movie_id : row[movie_id],
-                        title : row[title],
-                        genres : row[genres],
-
-
-                    })
                 # for row in cursor.fetchall():
                 #     movies.append({
-                #         'movie_id': row['movie_id'],
-                #         'title': row['title'],
-                #         'genres': row['genres'],
+                #         movie_id : row[movie_id],
+                #         title : row[title],
+                #         genres : row[genres],
+                #
+                #
                 #     })
+                for row in cursor.fetchall():
+                    movies.append({
+                        'movie_id': row['movie_id'],
+                        'title': row['title'],
+                        'genres': row['genres'],
+                    })
 
                 return movies
         # movies = []
