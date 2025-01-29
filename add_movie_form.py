@@ -13,31 +13,20 @@ from models.genres import Genre
 from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
 from database import Database
-from window_manager import WindowManager
-
-
-class AnotherWindow(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Add Movie".title())
-
+# from window_manager import WindowManager
+from utils.window import Window
 
 class AddMovieForm(QMainWindow):
-    def show_new_window(self, win):
-        self.w = win
-        self.w.show()
+
     def window_action(self):
-        if WindowManager.has_closed_admin_panel():
-            self.show_new_window(admin_panel.AdminPanelWindow())
+        if Window.has_closed_admin_panel():
+            self.my_window.show_new_window(admin_panel.AdminPanelWindow())
 
 
     def __init__(self):
         super().__init__()
-        self.open_admin_panel = WindowManager()
-
         self.db = Database()
-
+        self.my_window = Window()
         self.setWindowTitle("Add Movie".title())
         central_widget = QWidget()
         self.layout = QVBoxLayout()
@@ -76,5 +65,4 @@ def main():
 
 if __name__ == '__main__':
     db = Database()
-    movies = db.fetch_movies(genre='romance')
     main()

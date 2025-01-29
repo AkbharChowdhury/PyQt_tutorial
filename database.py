@@ -30,7 +30,7 @@ class Database:
         config = load_config()
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cursor:
-                cursor.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', (name,))
+                cursor.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', ([name]))
                 return cursor.fetchone()[0]
 
     def update_movie(self, movie_id: int, title: str):
@@ -50,7 +50,7 @@ class Database:
         config = load_config()
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cursor:
-                cursor.execute(f'DELETE FROM {table} WHERE {id_field} = %s;', (num,))
+                cursor.execute(f'DELETE FROM {table} WHERE {id_field} = %s;', ([num]))
 
     def add_movie_genres(self, movie_id: int, genre_id_list: set[int]):
         config = load_config()

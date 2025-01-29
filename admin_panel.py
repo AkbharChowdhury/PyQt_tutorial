@@ -9,53 +9,30 @@ from models.movie_table import MovieTable, MovieColumn
 from movie import MovieInfo
 from search_movie import SearchMovie
 from utils.messageboxes import MyMessageBox
-from window_manager import WindowManager
+from utils.window import Window
 from database import Database
+from utils.form_validation import ErrorMessage
 
-
-def fetch_movies():
-    db = Database()
-    movies = db.fetch_movies()
-    movies.reverse()
-    return movies
-
-
-def movie_error_message() -> str:
-    return 'Please choose a movie from the table'
-
-
-class FormManager:
-    def __init__(self, win):
-        self.win = win
-
-    def show(self):
-        self.win.show()
-
-class Form:
-    def __init__(self, win):
-        self.w = win
-
-    def show_new_window(self, win):
-        # self.w = add_movie_form.AddMovieForm()
-        # self.w = win
-        if self.w is None:
-            self.w = win
-        self.w.show()
 
 class AdminPanelWindow(QWidget):
+    def fetch_movies(self):
+        movies = self.db.fetch_movies()
+        movies.reverse()
+        return movies
+
     def show_new_window(self, win):
         self.w = win
         self.w.show()
 
     def edit_movie(self):
         if not self.tree.selectedIndexes():
-            MyMessageBox.show_message_box(movie_error_message(), QMessageBox.Icon.Warning)
+            MyMessageBox.show_message_box(MOVIE_ERROR_MESSAGE, QMessageBox.Icon.Warning)
             return
 
         index = self.get_selected_table_index()
-        self.movies = fetch_movies()
+        self.movies = self.fetch_movies()
         MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
-        self.show_new_window(edit_movie_form.EditMovieForm())
+        self.my_window.show_new_window(edit_movie_form.EditMovieForm())
 
     def text_changed(self, text):
         self.search.title = text
@@ -68,7 +45,7 @@ class AdminPanelWindow(QWidget):
 
     def delete_movie(self):
         if not self.tree.selectedIndexes():
-            MyMessageBox.show_message_box(movie_error_message(), QMessageBox.Icon.Warning)
+            MyMessageBox.show_message_box(MOVIE_ERROR_MESSAGE, QMessageBox.Icon.Warning)
             return
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
@@ -82,7 +59,8 @@ class AdminPanelWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.db = Database()
-        self.movies = fetch_movies()
+        self.my_window = Window()
+        self.movies = self.fetch_movies()
         self.setWindowTitle("admin panel".title())
 
         left, top, width, height = (10, 10, 640, 450)
@@ -124,10 +102,8 @@ class AdminPanelWindow(QWidget):
         btn_add_movie = QPushButton("add movie".title())
         btn_edit_movie = QPushButton("edit movie".title())
         btn_delete_movie = QPushButton("delete movie".title())
-        self.open_edit_movie_window = WindowManager()
 
-
-        btn_add_movie.clicked.connect(lambda x: self.show_new_window(add_movie_form.AddMovieForm()))
+        btn_add_movie.clicked.connect(lambda x: self.my_window.show_new_window(add_movie_form.AddMovieForm()))
         btn_delete_movie.clicked.connect(self.delete_movie)
         btn_edit_movie.clicked.connect(self.edit_movie)
 
@@ -165,4 +141,6 @@ def main():
 
 
 if __name__ == '__main__':
+
+    MOVIE_ERROR_MESSAGE = ErrorMessage.movie_error_message()
     main()

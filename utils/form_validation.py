@@ -3,6 +3,12 @@ from PyQt6.QtWidgets import QCheckBox, QMessageBox, QLineEdit
 from utils.messageboxes import MyMessageBox
 
 
+class ErrorMessage:
+    @staticmethod
+    def movie_error_message() -> str:
+        return 'Please choose a movie from the table'
+
+
 class AddMovieFormValidation:
 
     def clear_form(self):
@@ -11,7 +17,7 @@ class AddMovieFormValidation:
 
     def __init__(self, checkbox_genres, txt_movie: QLineEdit):
         self._checkbox_genres: list[QCheckBox | QCheckBox] = checkbox_genres
-        self.txt_movie = txt_movie
+        self.txt_movie: QLineEdit = txt_movie
 
     def is_valid(self):
         if self.txt_movie.text().strip() == '':

@@ -14,7 +14,8 @@ from movie import MovieInfo
 from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
 from database import Database
-from window_manager import WindowManager
+from utils.window import Window
+
 
 
 class EditMovieForm(QMainWindow):
@@ -25,6 +26,7 @@ class EditMovieForm(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = Database()
+        self.my_window = Window()
 
         self.setWindowTitle('edit movie'.title())
         central_widget = QWidget()
@@ -46,12 +48,12 @@ class EditMovieForm(QMainWindow):
         btn_edit_movie.clicked.connect(self.movie_button_action)
 
         self.layout.addWidget(btn_edit_movie)
-        self.open_admin_panel = WindowManager()
 
     def window_action(self):
-        if WindowManager.has_closed_admin_panel():
-            self.open_admin_panel = WindowManager()
-            self.open_admin_panel.show_new_window(admin_panel.AdminPanelWindow())
+        if Window.has_closed_admin_panel():
+            self.my_window.show_new_window(admin_panel.AdminPanelWindow())
+
+
         for win in QApplication.topLevelWidgets():
             if win.windowTitle() == 'edit movie'.title():
                 win.destroy(True)
