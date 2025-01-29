@@ -24,7 +24,7 @@ class Database:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT movie_id, title, genres FROM fn_get_movies('%{title}%','%{genre}%')")
-                return [dict(movie) for movie in cursor.fetchall()]
+                return [dict(row) for row in cursor.fetchall()]
 
     def add_movie(self, name):
         config = load_config()
