@@ -5,12 +5,13 @@ from PyQt6.QtGui import QStandardItemModel
 
 from models.my_counter import MyCounter
 
-
 counter = MyCounter(start_index=-1)
 
+
 class MovieColumn(Enum):
-    MOVIE = counter.get_counter()
-    GENRE = counter.get_counter()
+    TITLE = counter.get_counter()
+    GENRES = counter.get_counter()
+    MOVIE_ID = counter.get_counter()
 
 
 class MovieTable:
@@ -28,9 +29,9 @@ class MovieTable:
         for key, value in movie.items():
             model.setData(model.index(0, MovieColumn[key].value), value)
 
-
     @staticmethod
-    def add_movie_sorted(model: QStandardItemModel, movies: list[dict[str, str]]):
+    def add_movies(model: QStandardItemModel, movies: list[dict[str, str]]):
+        del movies[0][MovieColumn.MOVIE_ID.name]
         movies.reverse()
         for movie in movies:
             model.insertRow(0)

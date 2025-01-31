@@ -1,5 +1,4 @@
 import sys
-from typing import Any
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout, QMessageBox
@@ -16,14 +15,12 @@ from utils.form_validation import ErrorMessage
 
 
 class AdminPanelWindow(QWidget):
-    def fetch_movies(self) -> list[dict[str, str]]:
-        # return sorted(self.db.fetch_movies(), key=lambda d: d['title'])
-        # a = self.db.fetch_movies()
-        # a.re
-        # return sorted(a, reverse=True)
-        movies = self.db.fetch_movies()
-        movies.reverse()
-        return movies
+    def fetch_filtered_movies(self) -> list[dict[str, str]]:
+        return [{
+            MovieColumn.MOVIE_ID.name: movie.get(MovieColumn.MOVIE_ID.name.lower()),
+            MovieColumn.TITLE.name: movie.get(MovieColumn.TITLE.name.lower()),
+            MovieColumn.GENRES.name: movie.get(MovieColumn.GENRES.name.lower()),
+        } for movie in self.search.filter_movie()]
 
     def edit_movie(self):
         if not self.tree.selectedIndexes():
@@ -31,9 +28,8 @@ class AdminPanelWindow(QWidget):
             return
 
         index = self.get_selected_table_index()
-        self.movies = self.fetch_movies()
-        print(self.movies)
-        MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
+        self.movies = self.fetch_filtered_movies()
+        MovieInfo.MOVIE_ID = self.movies[index].get(MovieColumn.MOVIE_ID.name)
         self.my_window.show_new_window(edit_movie_form.EditMovieForm())
 
     def text_changed(self, text):
@@ -52,7 +48,7 @@ class AdminPanelWindow(QWidget):
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
             index = self.get_selected_table_index()
-            self.db.delete('movie_id', 'movies', self.movies[index].get('movie_id'))
+            self.db.delete('movie_id', 'movies', self.movies[index].get(MovieColumn.MOVIE_ID.name))
             self.tree.model().removeRow(index)
 
     def get_selected_table_index(self):
@@ -62,7 +58,7 @@ class AdminPanelWindow(QWidget):
         super().__init__()
         self.db = Database()
         self.my_window = Window()
-        self.movies = self.fetch_movies()
+        self.movies = self.db.fetch_movies()
         self.setWindowTitle("admin panel".title())
 
         left, top, width, height = (10, 10, 640, 450)
@@ -126,21 +122,8 @@ class AdminPanelWindow(QWidget):
     def populate_table(self):
         self.model = self.movie_table.create_model(self)
         self.tree.setModel(self.model)
-        movies = []
-        for movie in self.search.filter_movie():
-            movie_data = {
-                MovieColumn.MOVIE.name: movie.get('title'),
-                MovieColumn.GENRE.name: movie.get('genres'),
-            }
-            movies.append(movie_data)
-            # MovieTable.add_movie(self.model, movie_data)
-
-        movies_sorted = MovieInfo.sort_movie(movies, MovieColumn.MOVIE.name)
-
-        MovieTable.add_movie_sorted(self.model, movies_sorted)
-        print(f'{movies_sorted=}')
-
-
+        movies = self.fetch_filtered_movies()
+        MovieTable.add_movies(self.model, movies)
 
 
 def main():

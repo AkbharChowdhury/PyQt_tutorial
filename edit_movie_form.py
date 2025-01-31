@@ -26,7 +26,6 @@ class EditMovieForm(QMainWindow):
         super().__init__()
         self.db = Database()
         self.my_window = Window()
-
         self.setWindowTitle('edit movie'.title())
         central_widget = QWidget()
         self.layout = QVBoxLayout()
