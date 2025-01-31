@@ -23,7 +23,16 @@ class MovieTable:
         return model
 
     @staticmethod
-    def add_movie(model: QStandardItemModel, movies: dict[str, str]):
+    def add_movie(model: QStandardItemModel, movie: dict[str, str]):
         model.insertRow(0)
-        for key, value in movies.items():
+        for key, value in movie.items():
             model.setData(model.index(0, MovieColumn[key].value), value)
+
+
+    @staticmethod
+    def add_movie_sorted(model: QStandardItemModel, movies: list[dict[str, str]]):
+        movies.reverse()
+        for movie in movies:
+            model.insertRow(0)
+            for key, value in movie.items():
+                model.setData(model.index(0, MovieColumn[key].value), value)

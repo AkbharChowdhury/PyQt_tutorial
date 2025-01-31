@@ -20,8 +20,7 @@ from utils.window import Window
 
 class EditMovieForm(QMainWindow):
     def get_movie_details(self, movie_id: int) -> dict[str, str]:
-        movies = self.db.fetch_movies()
-        return list(filter(lambda x: x['movie_id'] == movie_id, movies))[0]
+        return list(filter(lambda x: x['movie_id'] == movie_id, self.db.fetch_movies()))[0]
 
     def __init__(self):
         super().__init__()
@@ -38,9 +37,8 @@ class EditMovieForm(QMainWindow):
         self.genre_checkboxes = Genre.create_genre_checkboxes(self, self.db)
         [self.layout.addWidget(genre_checkbox) for genre_checkbox in self.genre_checkboxes]
         self.movie_data = self.get_movie_details(MovieInfo.MOVIE_ID)
-        movie_data = self.movie_data
-        self.txt_movie.setText(movie_data['title'])
-        [checkbox.setChecked(True) for checkbox in self.genre_checkboxes if checkbox.text() in movie_data['genres']]
+        self.txt_movie.setText(self.movie_data['title'])
+        [checkbox.setChecked(True) for checkbox in self.genre_checkboxes if checkbox.text() in self.movie_data['genres']]
         central_widget.setLayout(self.layout)
         self.setCentralWidget(central_widget)
 

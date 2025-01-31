@@ -1,4 +1,5 @@
 import sys
+from typing import Any
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComboBox, \
     QGridLayout, QPushButton, QLabel, QGroupBox, QTreeView, QHBoxLayout, QMessageBox
@@ -15,14 +16,14 @@ from utils.form_validation import ErrorMessage
 
 
 class AdminPanelWindow(QWidget):
-    def fetch_movies(self):
+    def fetch_movies(self) -> list[dict[str, str]]:
+        # return sorted(self.db.fetch_movies(), key=lambda d: d['title'])
+        # a = self.db.fetch_movies()
+        # a.re
+        # return sorted(a, reverse=True)
         movies = self.db.fetch_movies()
         movies.reverse()
         return movies
-
-    def show_new_window(self, win):
-        self.w = win
-        self.w.show()
 
     def edit_movie(self):
         if not self.tree.selectedIndexes():
@@ -31,6 +32,7 @@ class AdminPanelWindow(QWidget):
 
         index = self.get_selected_table_index()
         self.movies = self.fetch_movies()
+        print(self.movies)
         MovieInfo.MOVIE_ID = self.movies[index].get('movie_id')
         self.my_window.show_new_window(edit_movie_form.EditMovieForm())
 
@@ -124,13 +126,21 @@ class AdminPanelWindow(QWidget):
     def populate_table(self):
         self.model = self.movie_table.create_model(self)
         self.tree.setModel(self.model)
+        movies = []
         for movie in self.search.filter_movie():
             movie_data = {
                 MovieColumn.MOVIE.name: movie.get('title'),
                 MovieColumn.GENRE.name: movie.get('genres'),
             }
+            movies.append(movie_data)
+            # MovieTable.add_movie(self.model, movie_data)
 
-            MovieTable.add_movie(self.model, movie_data)
+        movies_sorted = MovieInfo.sort_movie(movies, MovieColumn.MOVIE.name)
+
+        MovieTable.add_movie_sorted(self.model, movies_sorted)
+        print(f'{movies_sorted=}')
+
+
 
 
 def main():
@@ -141,6 +151,5 @@ def main():
 
 
 if __name__ == '__main__':
-
     MOVIE_ERROR_MESSAGE = ErrorMessage.movie_error_message()
     main()
