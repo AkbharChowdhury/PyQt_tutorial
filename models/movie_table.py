@@ -14,6 +14,9 @@ class MovieColumn(Enum):
     MOVIE_ID = counter.get_counter()
 
 
+del counter
+
+
 class MovieTable:
 
     def create_model(self, parent):
@@ -22,12 +25,6 @@ class MovieTable:
         for column in MovieColumn:
             model.setHeaderData(column.value, horizontal, column.name.title())
         return model
-
-    @staticmethod
-    def add_movie(model: QStandardItemModel, movie: dict[str, str]):
-        model.insertRow(0)
-        for key, value in movie.items():
-            model.setData(model.index(0, MovieColumn[key].value), value)
 
     @staticmethod
     def add_movies(model: QStandardItemModel, movies: list[dict[str, str]]):

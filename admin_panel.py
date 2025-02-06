@@ -122,7 +122,7 @@ class AdminPanelWindow(QWidget):
     def populate_table(self):
         self.model = self.movie_table.create_model(self)
         self.tree.setModel(self.model)
-        movies = self.fetch_filtered_movies()
+        movies: list[dict[str, str]] = self.fetch_filtered_movies()
         MovieTable.add_movies(self.model, movies)
 
 
