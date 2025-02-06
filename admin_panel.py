@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QApplication, QComb
 
 import add_movie_form
 import edit_movie_form
+from models.grid_layout_manager import GridLayoutManager
 from models.movie_table import MovieTable, MovieColumn
 from movie import MovieInfo
 from search_movie import SearchMovie
@@ -37,7 +38,7 @@ class AdminPanelWindow(QWidget):
         self.populate_table()
 
     def combobox_changed(self):
-        genre_text = '' if self.combobox.currentText() == SearchMovie.all_genres() else self.combobox.currentText()
+        genre_text = '' if self.combobox_genres.currentText() == SearchMovie.all_genres() else self.combobox_genres.currentText()
         self.search.genre = genre_text
         self.populate_table()
 
@@ -68,35 +69,37 @@ class AdminPanelWindow(QWidget):
         self.search = SearchMovie(title='', genre='', db=self.db)
         self.search.filter_movie()
 
-        self.text_box = QLineEdit()
+        self.text_box_movies = QLineEdit()
+
         outer_layout = QVBoxLayout()
         top_layout = QGridLayout()
-        top_layout.addWidget(QLabel("Movie"), 0, 0)
-        top_layout.addWidget(self.text_box, 0, 1)
-        self.text_box.installEventFilter(self)
-        self.text_box.textEdited.connect(self.text_changed)
+        middle_layout = QVBoxLayout()
+        bottom_layout = QGridLayout()
 
-        self.combobox = QComboBox()
-        self.combobox.addItem(SearchMovie.all_genres())
-        [self.combobox.addItem(row.name) for row in self.db.fetch_movie_genres()]
-        self.combobox.activated.connect(self.combobox_changed)
+        self.text_box_movies.installEventFilter(self)
+        self.text_box_movies.textEdited.connect(self.text_changed)
 
-        top_layout.addWidget(QLabel("Genre"), 0, 2)
-        top_layout.addWidget(self.combobox, 0, 3)
+        self.combobox_genres = QComboBox()
+        self.combobox_genres.addItem(SearchMovie.all_genres())
+        [self.combobox_genres.addItem(row.name) for row in self.db.fetch_movie_genres()]
+        self.combobox_genres.activated.connect(self.combobox_changed)
 
-        self.data_group_box = QGroupBox("Movies")
+        GridLayoutManager.add_widgets(top_layout,
+                                      [QLabel("Movie"), self.text_box_movies, QLabel("Genre"), self.combobox_genres])
+
+        self.data_group_box = QGroupBox()
         self.tree = QTreeView()
         self.tree.setRootIsDecorated(False)
         self.tree.setAlternatingRowColors(True)
 
         data_layout = QHBoxLayout()
         data_layout.addWidget(self.tree)
+
         self.data_group_box.setLayout(data_layout)
         self.movie_table = MovieTable()
         self.model = None
         self.populate_table()
 
-        bottom_layout = QGridLayout()
         btn_add_movie = QPushButton("add movie".title())
         btn_edit_movie = QPushButton("edit movie".title())
         btn_delete_movie = QPushButton("delete movie".title())
@@ -105,11 +108,8 @@ class AdminPanelWindow(QWidget):
         btn_delete_movie.clicked.connect(self.delete_movie)
         btn_edit_movie.clicked.connect(self.edit_movie)
 
-        bottom_layout.addWidget(btn_add_movie, 0, 0)
-        bottom_layout.addWidget(btn_edit_movie, 0, 1)
-        bottom_layout.addWidget(btn_delete_movie, 0, 2)
+        GridLayoutManager.add_widgets(bottom_layout, [btn_add_movie, btn_edit_movie, btn_delete_movie])
 
-        middle_layout = QVBoxLayout()
         middle_layout.addWidget(self.data_group_box)
 
         outer_layout.addLayout(top_layout)

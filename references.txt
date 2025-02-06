@@ -1,2 +1,4 @@
 PyQt treeview:
 https://pythonspot.com/pyqt5-treeview/
+PyQt layouts:
+https://realpython.com/python-pyqt-layout/
