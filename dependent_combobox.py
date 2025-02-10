@@ -3,11 +3,16 @@ import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QComboBox
 
 from models.grid_layout_manager import GridLayoutManager
+from types import MappingProxyType
 
 
 class MainWindow(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        people = MappingProxyType({
+            'male': ('martin lewis', 'gordon ramsey'),
+            'female': ('millie smith', 'april jones', 'emily watson'),
+        })
 
         self.setWindowTitle('dependent combobox example'.title())
 
@@ -18,10 +23,10 @@ class MainWindow(QWidget):
         self.combo_names = QComboBox()
         self.label_picked_data = QLabel('You Picked:')
 
-        self.combo_sex.addItem('male'.title(), list(map(lambda x: x.title(), ['martin lewis', 'gordon ramsey'])))
-        self.combo_sex.addItem('female'.title(),
-                               list(map(lambda x: x.title(), ['millie smith', 'april jones', 'emily watson'])))
-        self.update_name_combox(0)
+        for sex, names in people.items():
+            self.combo_sex.addItem(sex.title(), list(map(lambda person: person.title(), names)))
+
+        self.update_name_combox(index=self.combo_sex.currentIndex())
         self.update_name_label()
 
         GridLayoutManager.add_widgets_custom_row(layout,
