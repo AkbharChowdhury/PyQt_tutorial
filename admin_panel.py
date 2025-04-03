@@ -49,7 +49,7 @@ class AdminPanelWindow(QWidget):
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
             index = self.get_selected_table_index()
-            self.db.delete('movie_id', 'movies', self.movies[index].get(MovieColumn.MOVIE_ID.name))
+            self.db.delete('movie_id', 'movies', self.movies[index].get(MovieColumn.MOVIE_ID.name.lower()))
             self.tree.model().removeRow(index)
 
     def get_selected_table_index(self):

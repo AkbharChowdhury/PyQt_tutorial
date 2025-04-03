@@ -28,7 +28,7 @@ class MovieTable:
 
     @staticmethod
     def add_movies(model: QStandardItemModel, movies: list[dict[str, str]]):
-        del movies[0][MovieColumn.MOVIE_ID.name]
+        # del movies[0][MovieColumn.MOVIE_ID.name]
         movies.reverse()
         for movie in movies:
             model.insertRow(0)
