@@ -17,10 +17,13 @@ from utils.form_validation import ErrorMessage
 
 class AdminPanelWindow(QWidget):
     def fetch_filtered_movies(self) -> list[dict[str, str]]:
+        movie_id = MovieColumn.MOVIE_ID.name
+        title = MovieColumn.TITLE.name
+        genres = MovieColumn.GENRES.name
         return [{
-            MovieColumn.MOVIE_ID.name: movie.get(MovieColumn.MOVIE_ID.name.lower()),
-            MovieColumn.TITLE.name: movie.get(MovieColumn.TITLE.name.lower()),
-            MovieColumn.GENRES.name: movie.get(MovieColumn.GENRES.name.lower()),
+            movie_id: movie.get(movie_id.lower()),
+            title: movie.get(title.lower()),
+            genres: movie.get(genres.lower()),
         } for movie in self.search.filter_movie()]
 
     def edit_movie(self):
@@ -28,10 +31,13 @@ class AdminPanelWindow(QWidget):
             MyMessageBox.show_message_box(MOVIE_ERROR_MESSAGE, QMessageBox.Icon.Warning)
             return
 
-        index = self.get_selected_table_index()
-        self.movies = self.fetch_filtered_movies()
-        MovieInfo.MOVIE_ID = self.movies[index].get(MovieColumn.MOVIE_ID.name)
+        selected_movie_index = self.get_selected_table_index()
+        self.update_movie_list()
+        MovieInfo.MOVIE_ID = self.movies[selected_movie_index].get(MovieColumn.MOVIE_ID.name)
         self.my_window.show_new_window(edit_movie_form.EditMovieForm())
+
+    def update_movie_list(self) -> None:
+        self.movies = self.fetch_filtered_movies()
 
     def text_changed(self, text):
         self.search.title = text
@@ -48,9 +54,12 @@ class AdminPanelWindow(QWidget):
             return
 
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
-            index = self.get_selected_table_index()
-            self.db.delete('movie_id', 'movies', self.movies[index].get(MovieColumn.MOVIE_ID.name.lower()))
-            self.tree.model().removeRow(index)
+            selected_movie_index = self.get_selected_table_index()
+            self.update_movie_list()
+            movie_id_col: str = MovieColumn.MOVIE_ID.name
+            movie_id: int = int(self.movies[selected_movie_index].get(movie_id_col))
+            self.db.delete(movie_id_col.lower(), 'movies', movie_id)
+            self.tree.model().removeRow(selected_movie_index)
 
     def get_selected_table_index(self):
         return self.tree.selectedIndexes()[0].row()
@@ -122,8 +131,8 @@ class AdminPanelWindow(QWidget):
     def populate_table(self):
         self.model = self.movie_table.create_model(self)
         self.tree.setModel(self.model)
-        movies: list[dict[str, str]] = self.fetch_filtered_movies()
-        MovieTable.add_movies(self.model, movies)
+        self.update_movie_list()
+        MovieTable.add_movies(self.model, self.movies)
 
 
 def main():
