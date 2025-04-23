@@ -16,12 +16,12 @@ from database import Database
 # from window_manager import WindowManager
 from utils.window import Window
 
+
 class AddMovieForm(QMainWindow):
 
     def window_action(self):
         if Window.has_closed_admin_panel():
             self.my_window.show_new_window(admin_panel.AdminPanelWindow())
-
 
     def __init__(self):
         super().__init__()
@@ -47,9 +47,9 @@ class AddMovieForm(QMainWindow):
         db = self.db
         form = AddMovieFormValidation(self.genre_checkboxes, self.txt_movie)
         if not form.is_valid(): return
-        selected_genres = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
-        genre_id_list = set(genre.genre_id for genre in Genre.get_genres(db) if genre.name in selected_genres)
-        last_inserted_movie_id = db.add_movie(self.txt_movie.text())
+        selected_genres: list[str] = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
+        genre_id_list: set = set(genre.genre_id for genre in Genre.get_genres(db) if genre.name in selected_genres)
+        last_inserted_movie_id: int = db.add_movie(self.txt_movie.text())
         db.add_movie_genres(last_inserted_movie_id, genre_id_list)
         form.clear_form()
         MyMessageBox.show_message_box('Movie Added', QMessageBox.Icon.Information)
