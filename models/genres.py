@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QCheckBox
-from pydantic import BaseModel, NonNegativeInt, field_validator
+from pydantic import BaseModel, field_validator, Field
+from uuid import uuid4
 
 
 class Genre(BaseModel):
@@ -7,7 +8,7 @@ class Genre(BaseModel):
         frozen = True
 
     name: str
-    genre_id: NonNegativeInt
+    genre_id: int = Field(default=str(uuid4()), gt=0)
 
     @staticmethod
     def genre_split():
@@ -28,6 +29,5 @@ class Genre(BaseModel):
             raise Exception('Genre cannot be empty')
         return name
 
-
-genre = Genre(name='', genre_id=0)
-print(genre.model_dump())
+my_genre = Genre(name='Horror')
+print(my_genre)
