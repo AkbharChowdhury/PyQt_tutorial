@@ -1,0 +1,2 @@
+pydantic validation:
+https://www.youtube.com/watch?v=7aBRk_JP-qY
