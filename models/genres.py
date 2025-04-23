@@ -1,10 +1,7 @@
-from dataclasses import dataclass
-
 from PyQt6.QtWidgets import QCheckBox
+from pydantic import BaseModel
 
-
-@dataclass(frozen=True)
-class Genre:
+class Genre(BaseModel):
     name: str
     genre_id: int
 
