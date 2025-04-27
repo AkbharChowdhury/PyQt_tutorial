@@ -143,5 +143,6 @@ def main():
 
 
 if __name__ == '__main__':
+
     MOVIE_ERROR_MESSAGE = ErrorMessage.movie_error_message()
     main()

@@ -1,6 +1,14 @@
 from PyQt6.QtWidgets import QCheckBox
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, field_validator, Field, NonNegativeInt
 from uuid import uuid4
+
+
+class MovieGenre(BaseModel):
+    class Config:
+        frozen = True
+
+    movie_id: NonNegativeInt
+    genre_id: NonNegativeInt
 
 
 class Genre(BaseModel):
@@ -29,5 +37,3 @@ class Genre(BaseModel):
             raise Exception('Genre cannot be empty')
         return name
 
-my_genre = Genre(name='Horror')
-print(my_genre)

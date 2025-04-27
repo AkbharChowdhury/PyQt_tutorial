@@ -2,7 +2,7 @@ from typing import Any
 
 import psycopg2
 from config import load_config
-from models.genres import Genre
+from models.genres import Genre, MovieGenre
 import psycopg2.extras
 
 
@@ -34,18 +34,17 @@ class Database:
                 cursor.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', ([name]))
                 return cursor.fetchone()[0]
 
+
     def update_movie(self, movie_id: int, title: str) -> None:
         config = load_config()
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
-                cur.execute("""
+                data = dict(movie_id=movie_id, title=title)
+                cur.execute(f"""
                                         UPDATE movies 
-                                        SET title = %(title)s
-                                        WHERE movie_id = %(movie_id)s
-                                                                """, {
-                    'title': title,
-                    'movie_id': movie_id,
-                })
+                                        SET title = {self.__field('title')}
+                                        WHERE movie_id = {self.__field('movie_id')}
+                                                                """, data)
 
     def delete(self, id_field: str, table: str, num: int) -> None:
         config = load_config()
@@ -58,12 +57,10 @@ class Database:
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
                 for genre_id in genre_id_list:
-                    cur.execute("""
-                                              INSERT INTO movie_genres (movie_id, genre_id) VALUES (
-                                              %(movie_id)s,
-                                               %(genre_id)s
-                                              );
-                                              """, {
-                        'movie_id': movie_id,
-                        'genre_id': genre_id,
-                    })
+                    data = MovieGenre(movie_id=movie_id, genre_id=genre_id).model_dump()
+                    cur.execute(
+                        f'INSERT INTO movie_genres (movie_id, genre_id) VALUES ({self.__field('movie_id')}, {self.__field('genre_id')})',
+                        data)
+
+    def __field(self, name: str):
+        return f'%({name})s'
