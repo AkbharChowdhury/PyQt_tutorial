@@ -18,6 +18,7 @@ class Database:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT genre_id, genre FROM genres ORDER BY genre")
+
                 return list((Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()))
 
     def fetch_movies(self, title: str = '', genre: str = '') -> list[dict[str, Any]]:
@@ -33,7 +34,6 @@ class Database:
             with conn.cursor() as cursor:
                 cursor.execute('INSERT INTO movies(title) VALUES(%s) RETURNING movie_id;', ([name]))
                 return cursor.fetchone()[0]
-
 
     def update_movie(self, movie_id: int, title: str) -> None:
         config = load_config()
