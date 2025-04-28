@@ -36,4 +36,3 @@ class Genre(BaseModel):
         if name.strip() == '':
             raise Exception('Genre cannot be empty')
         return name
-

@@ -18,15 +18,14 @@ class Database:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT genre_id, genre FROM genres ORDER BY genre")
-
                 return list((Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()))
 
     def fetch_movies(self, title: str = '', genre: str = '') -> list[dict[str, Any]]:
         with psycopg2.connect(**load_config()) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT movie_id, title, genres FROM fn_get_movies('%{title}%','%{genre}%')")
-                data = (dict(row) for row in cursor.fetchall())
-                return sorted(data, key=lambda d: d.get('title'))
+                movies = (dict(row) for row in cursor.fetchall())
+                return sorted(movies, key=lambda m: m.get('title'))
 
     def add_movie(self, name) -> int:
         config = load_config()
