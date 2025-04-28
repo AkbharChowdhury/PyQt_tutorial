@@ -44,7 +44,7 @@ class AdminPanelWindow(QWidget):
         self.populate_table()
 
     def combobox_changed(self):
-        genre_text = '' if self.combobox_genres.currentText() == SearchMovie.all_genres() else self.combobox_genres.currentText()
+        genre_text = '' if self.combobox_genres.currentText() == SearchMovie.any_genres() else self.combobox_genres.currentText()
         self.search.genre = genre_text
         self.populate_table()
 
@@ -89,7 +89,7 @@ class AdminPanelWindow(QWidget):
         self.text_box_movies.textEdited.connect(self.text_changed)
 
         self.combobox_genres = QComboBox()
-        self.combobox_genres.addItem(SearchMovie.all_genres())
+        self.combobox_genres.addItem(SearchMovie.any_genres())
         [self.combobox_genres.addItem(row.name) for row in self.db.fetch_movie_genres()]
         self.combobox_genres.activated.connect(self.combobox_changed)
 
@@ -143,6 +143,5 @@ def main():
 
 
 if __name__ == '__main__':
-
     MOVIE_ERROR_MESSAGE = ErrorMessage.movie_error_message()
     main()

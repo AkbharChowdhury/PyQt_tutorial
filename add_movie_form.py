@@ -13,7 +13,6 @@ from models.genres import Genre
 from utils.form_validation import AddMovieFormValidation
 from utils.messageboxes import MyMessageBox
 from database import Database
-# from window_manager import WindowManager
 from utils.window import Window
 
 
@@ -27,7 +26,7 @@ class AddMovieForm(QMainWindow):
         super().__init__()
         self.db = Database()
         self.my_window = Window()
-        self.setWindowTitle("Add Movie".title())
+        self.setWindowTitle("add movie".title())
         central_widget = QWidget()
         self.layout = QVBoxLayout()
         self.layout.addWidget(QLabel("Movie"))
@@ -52,7 +51,7 @@ class AddMovieForm(QMainWindow):
         last_inserted_movie_id: int = db.add_movie(self.txt_movie.text())
         db.add_movie_genres(last_inserted_movie_id, genre_id_list)
         form.clear_form()
-        MyMessageBox.show_message_box('Movie Added', QMessageBox.Icon.Information)
+        MyMessageBox.show_message_box('movie added'.title(), QMessageBox.Icon.Information)
         self.window_action()
 
 
