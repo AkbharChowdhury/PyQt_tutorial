@@ -14,14 +14,15 @@ from utils.window import Window
 from database import Database
 from utils.form_validation import ErrorMessage
 
+MOVIE_ID_COLUMN: str = 'MOVIE_ID'
+
 
 class AdminPanelWindow(QWidget):
     def fetch_filtered_movies(self) -> list[dict[str, str]]:
-        movie_id = MovieColumn.MOVIE_ID.name
         title = MovieColumn.TITLE.name
         genres = MovieColumn.GENRES.name
         return [{
-            movie_id: movie.get(movie_id.lower()),
+            MOVIE_ID_COLUMN: movie.get(MOVIE_ID_COLUMN.lower()),
             title: movie.get(title.lower()),
             genres: movie.get(genres.lower()),
         } for movie in self.search.filter_movie()]
@@ -30,10 +31,9 @@ class AdminPanelWindow(QWidget):
         if not self.tree.selectedIndexes():
             MyMessageBox.show_message_box(MOVIE_ERROR_MESSAGE, QMessageBox.Icon.Warning)
             return
-
         selected_movie_index = self.get_selected_table_index()
         self.update_movie_list()
-        MovieInfo.MOVIE_ID = self.movies[selected_movie_index].get(MovieColumn.MOVIE_ID.name)
+        MovieInfo.MOVIE_ID = self.movies[selected_movie_index].get('MOVIE_ID')
         self.my_window.show_new_window(edit_movie_form.EditMovieForm())
 
     def update_movie_list(self) -> None:
@@ -56,7 +56,7 @@ class AdminPanelWindow(QWidget):
         if MyMessageBox.confirm(self, 'Are you sure you want to delete this movie?') == QMessageBox.StandardButton.Yes:
             selected_movie_index = self.get_selected_table_index()
             self.update_movie_list()
-            movie_id_col: str = MovieColumn.MOVIE_ID.name
+            movie_id_col: str = MOVIE_ID_COLUMN
             movie_id: int = int(self.movies[selected_movie_index].get(movie_id_col))
             self.db.delete(movie_id_col.lower(), 'movies', movie_id)
             self.tree.model().removeRow(selected_movie_index)
@@ -75,7 +75,7 @@ class AdminPanelWindow(QWidget):
 
         self.setGeometry(left, top, width, height)
         self.movie_title = self.genre = ''
-        self.search = SearchMovie(title='', genre='', db=self.db)
+        self.search = SearchMovie(title='', genre='')
         self.search.filter_movie()
 
         self.text_box_movies = QLineEdit()
