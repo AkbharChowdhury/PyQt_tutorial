@@ -3,8 +3,7 @@ from database import Database
 
 def main():
     db = Database()
-    genres = db.fetch_all_genres()
-    print(genres)
+    print(db.fetch_movie_genres())
 
 
 if __name__ == '__main__':
