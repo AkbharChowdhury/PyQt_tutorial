@@ -34,11 +34,8 @@ class Database:
         config = load_config()
         with connect(**config) as conn, conn.cursor() as cur:
             data = dict(movie_id=movie_id, title=title)
-            cur.execute(f"""
-                                        UPDATE movies 
-                                        SET title = {self.__field('title')}
-                                        WHERE movie_id = {self.__field('movie_id')}
-                                                                """, data)
+            cur.execute(
+                f' UPDATE movies SET title = {self.__field('title')} WHERE movie_id = {self.__field('movie_id')}', data)
 
     def delete(self, id_field: str, table: str, num: int) -> None:
         with connect(**load_config()) as conn, conn.cursor() as cursor:
