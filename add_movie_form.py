@@ -48,8 +48,10 @@ class AddMovieForm(QMainWindow):
         if not form.is_valid(): return
         selected_genres: list[str] = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
         genre_id_list: set = set(genre.genre_id for genre in Genre.get_genres(db) if genre.name in selected_genres)
-        last_inserted_movie_id: int = db.add_movie(self.txt_movie.text())
-        db.add_movie_genres(last_inserted_movie_id, genre_id_list)
+        movie_title : str = self.txt_movie.text()
+        # last_inserted_movie_id: int = db.add_movie(self.txt_movie.text())
+        # db.add_movie_genres(last_inserted_movie_id, genre_id_list)
+        db.add_movie_and_genres(movie_title, genre_id_list)
         form.clear_form()
         MyMessageBox.show_message_box('movie added'.title(), QMessageBox.Icon.Information)
         self.window_action()

@@ -9,6 +9,10 @@ from models.genres import Genre, MovieGenre
 
 class Database:
 
+    def add_movie_and_genres(self, title: str, genre_id_list: set[int]) -> None:
+        with connect(**load_config()) as conn, conn.cursor() as cur:
+            cur.execute('CALL pr_add_movie_and_genres(%s,%s)', (title, str(genre_id_list)))
+
     def fetch_movie_genres(self) -> list[Genre]:
         with connect(**load_config()) as conn, conn.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute("SELECT genre, genre_id FROM available_movie_genres")
@@ -51,3 +55,6 @@ class Database:
 
     def __field(self, name: str):
         return f'%({name})s'
+
+
+
