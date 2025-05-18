@@ -2,8 +2,11 @@ from database import Database
 
 
 def main():
-    db = Database()
-    print(db.fetch_movie_genres())
+    a = {1, 2, 3}
+    print(str(a))
+    print(repr(a))
+    # db = Database()
+    # print(db.fetch_movie_genres())
 
 
 if __name__ == '__main__':
