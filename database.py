@@ -1,8 +1,6 @@
 from typing import Any
-
 from psycopg2 import connect
 from psycopg2.extras import DictCursor
-
 from config import load_config
 from models.genres import Genre, MovieGenre
 
@@ -48,13 +46,11 @@ class Database:
     def add_movie_genres(self, movie_id: int, genre_id_list: set[int]) -> None:
         with connect(**load_config()) as conn, conn.cursor() as cur:
             for genre_id in genre_id_list:
-                data = MovieGenre(movie_id=movie_id, genre_id=genre_id).model_dump()
+                data: dict[str, int] = MovieGenre(movie_id=movie_id, genre_id=genre_id).model_dump()
                 cur.execute(
                     f'INSERT INTO movie_genres (movie_id, genre_id) VALUES ({self.__field('movie_id')}, {self.__field('genre_id')})',
                     data)
 
     def __field(self, name: str):
         return f'%({name})s'
-
-
 
