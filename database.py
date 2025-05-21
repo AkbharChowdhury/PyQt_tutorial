@@ -16,8 +16,6 @@ class Database:
             cursor.execute("SELECT genre, genre_id FROM available_movie_genres")
             return list((Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()))
 
-
-
     def fetch_all_genres(self) -> list[Genre]:
         with connect(**load_config()) as conn, conn.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute("SELECT genre AS name, genre_id FROM genres ORDER BY genre")
