@@ -12,11 +12,11 @@ class ErrorMessage:
 class AddMovieFormValidation:
 
     def clear_form(self):
-        [checkbox.setChecked(False) for checkbox in self._checkbox_genres if checkbox.isChecked()]
+        [checkbox.setChecked(False) for checkbox in self.__checkbox_genres if checkbox.isChecked()]
         self.txt_movie.clear()
 
     def __init__(self, checkbox_genres, txt_movie: QLineEdit):
-        self._checkbox_genres: list[QCheckBox | QCheckBox] = checkbox_genres
+        self.__checkbox_genres: list[QCheckBox] = checkbox_genres
         self.txt_movie: QLineEdit = txt_movie
 
     def is_valid(self):
@@ -29,4 +29,4 @@ class AddMovieFormValidation:
         return True
 
     def _has_selected_genre(self):
-        return len(list(filter(lambda checkbox: checkbox.isChecked(), self._checkbox_genres))) > 0
+        return len(list(filter(lambda checkbox: checkbox.isChecked(), self.__checkbox_genres))) > 0

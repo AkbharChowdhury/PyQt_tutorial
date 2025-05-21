@@ -16,10 +16,12 @@ class Database:
             cursor.execute("SELECT genre, genre_id FROM available_movie_genres")
             return list((Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()))
 
+
+
     def fetch_all_genres(self) -> list[Genre]:
         with connect(**load_config()) as conn, conn.cursor(cursor_factory=DictCursor) as cursor:
-            cursor.execute("SELECT genre_id, genre FROM genres ORDER BY genre")
-            return list((Genre(name=row['genre'], genre_id=row['genre_id']) for row in cursor.fetchall()))
+            cursor.execute("SELECT genre AS name, genre_id FROM genres ORDER BY genre")
+            return list(Genre(**dict(row)) for row in cursor.fetchall())
 
     def fetch_movies(self, title: str = '', genre: str = '') -> list[dict[str, Any]]:
         with connect(**load_config()) as conn, conn.cursor(cursor_factory=DictCursor) as cursor:
@@ -37,7 +39,7 @@ class Database:
         with connect(**config) as conn, conn.cursor() as cur:
             data = dict(movie_id=movie_id, title=title)
             cur.execute(
-                f' UPDATE movies SET title = {self.__field('title')} WHERE movie_id = {self.__field('movie_id')}', data)
+                f'UPDATE movies SET title = {self.__field('title')} WHERE movie_id = {self.__field('movie_id')}', data)
 
     def delete(self, id_field: str, table: str, num: int) -> None:
         with connect(**load_config()) as conn, conn.cursor() as cursor:
@@ -54,3 +56,7 @@ class Database:
     def __field(self, name: str):
         return f'%({name})s'
 
+
+if __name__ == '__main__':
+    db = Database()
+    print(db.fetch_all_genres())

@@ -33,7 +33,7 @@ class EditMovieForm(QMainWindow):
         self.txt_movie = QLineEdit(self)
 
         self.layout.addWidget(self.txt_movie)
-        self.genre_checkboxes = Genre.create_genre_checkboxes(self, self.db)
+        self.genre_checkboxes = Genre.create_genre_checkboxes(self.db)
         [self.layout.addWidget(genre_checkbox) for genre_checkbox in self.genre_checkboxes]
         self.movie_data = self.get_movie_details(MovieInfo.MOVIE_ID)
         self.txt_movie.setText(self.movie_data['title'])

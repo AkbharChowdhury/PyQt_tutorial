@@ -27,8 +27,8 @@ class Genre(BaseModel):
         return db.fetch_all_genres()
 
     @staticmethod
-    def create_genre_checkboxes(self, db):
-        return [QCheckBox(genre.name, self) for genre in Genre.get_genres(db)]
+    def create_genre_checkboxes(db):
+        return [QCheckBox(genre.name) for genre in Genre.get_genres(db)]
 
     @field_validator('name')
     @classmethod

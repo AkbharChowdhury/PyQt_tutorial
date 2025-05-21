@@ -5,16 +5,16 @@ CREATE OR REPLACE PROCEDURE pr_add_movie_and_genres(
 AS
 $body$
 DECLARE
-    genre_id_index int;
-    inserted_movie_id INT;
+    genre int;
+    movie int;
 
 BEGIN
 
-    INSERT INTO movies(title) VALUES (movie_title) RETURNING movie_id INTO inserted_movie_id;
+    INSERT INTO movies(title) VALUES (movie_title) RETURNING movie_id INTO movie;
 
-		FOREACH genre_id_index IN ARRAY genres
+		FOREACH genre IN ARRAY genres
 		LOOP
-			INSERT INTO movie_genres (movie_id, genre_id) VALUES (inserted_movie_id, genre_id_index);
+			INSERT INTO movie_genres (movie_id, genre_id) VALUES (movie, genre);
 		END LOOP;
 
 END;
